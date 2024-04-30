@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Src\DiceRollingAction;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Src\Domain\Actions\DiceRollingAction;
 
 class DiceRollingController extends Controller
 {
