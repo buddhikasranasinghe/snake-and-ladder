@@ -19,7 +19,7 @@ class DiceRollingTest extends TestCase
         $response->assertOk();
 
         $this->assertLessThan(7, $randomValue = $response->json());
-        $this->assertGreaterThan(1, $randomValue);
+        $this->assertGreaterThan(0, $randomValue);
         $this->assertIsInt($randomValue);
     }
 }
