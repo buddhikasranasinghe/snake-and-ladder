@@ -16,7 +16,7 @@ class PlayersMakingTest extends TestCase
      */
     public function when_invalid_payload_given(mixed $payload, string $errors)
     {
-        $response = $this->startGame($payload);
+        $response = $this->makePlayers($payload);
 
         $this->assertValidationErrorsReceived($response, $errors);
     }
@@ -43,13 +43,13 @@ class PlayersMakingTest extends TestCase
     public function when_players_count_given()
     {
         foreach (range(1,5) as $players) {
-            $response = $this->startGame($players);
+            $response = $this->makePlayers($players);
 
             $this->assertPlayersMade($response, $players);
         }
     }
 
-    protected function startGame(mixed $payload): TestResponse
+    protected function makePlayers(mixed $payload): TestResponse
     {
         return $this->postJson('api/make-players', [
             'number_of_players' => $payload,
