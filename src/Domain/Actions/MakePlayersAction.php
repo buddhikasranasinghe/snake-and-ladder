@@ -7,6 +7,7 @@ use Src\Domain\Model\Player;
 use Domain\Enums\PlayerTypes;
 use Illuminate\Support\Collection;
 use Src\Domain\Model\PlayersCollection;
+use Illuminate\Support\Facades\Session;
 use Src\Domain\Commands\MakePlayersCommand;
 
 class MakePlayersAction
@@ -21,6 +22,8 @@ class MakePlayersAction
         $this->makeHumanPlayer();
 
         $this->makeAIPlayers($command);
+
+        $this->storePlayers();
 
         return $this->players;
     }
@@ -79,6 +82,13 @@ class MakePlayersAction
             if (!$this->players->hasAlreadyTaken($colour, 'pawnColour')) {
                 return $colour;
             }
+        }
+    }
+
+    protected function storePlayers(): void
+    {
+        if ($this->players->isNotEmpty()) {
+            Session::put('players', $this->players->toArray());
         }
     }
 }

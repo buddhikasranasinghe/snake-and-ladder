@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Src\Domain\Model\Player;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
+use Illuminate\Support\Facades\Session;
 
 class PlayersMakingTest extends TestCase
 {
@@ -68,6 +70,8 @@ class PlayersMakingTest extends TestCase
         $response->assertOk();
 
         $this->assertPlayersReceived($response, $payload);
+
+        $this->assertSessionUpdated($response);
     }
 
     protected function assertPlayersReceived(TestResponse $response, $payload): void
@@ -86,6 +90,20 @@ class PlayersMakingTest extends TestCase
             $this->assertNotNull($player['name']);
             $this->assertNotNull($player['pawnColour']);
             $this->assertNotNull($player['type']);
+        }
+    }
+
+    protected function assertSessionUpdated(TestResponse $response): void
+    {
+        $this->assertNotNull(Session::get('players'));
+
+        $playersOnSession = Collection::wrap(Session::get('players'));
+
+        foreach ($response->json('players') as $receivedPlayer) {
+            $storedplayer = $playersOnSession->filter(fn (Player $player) => $player->key === $receivedPlayer['key']);
+
+            $this->assertSame($receivedPlayer['name'], $storedplayer->first()->name);
+            $this->assertSame($receivedPlayer['pawnColour'], $storedplayer->first()->pawnColour);
         }
     }
 }
