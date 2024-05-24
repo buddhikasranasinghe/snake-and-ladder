@@ -85,6 +85,11 @@ class PlayersMakingTest extends TestCase
             Collection::wrap($response->json('players'))->where('type', 'human')
         );
 
+        $this->assertCount(
+            1,
+            Collection::wrap($response->json('players'))->where('name', 'You')
+        );
+
         foreach ($receivedPlayers as $player) {
             $this->assertNotNull($player['key']);
             $this->assertNotNull($player['name']);
