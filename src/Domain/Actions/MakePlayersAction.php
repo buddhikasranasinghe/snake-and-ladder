@@ -30,7 +30,7 @@ class MakePlayersAction
 
     protected function makeHumanPlayer(): void
     {
-        $this->players->push($this->makePlayer(PlayerTypes::HUMAN));
+        $this->players->push($this->makePlayer(PlayerTypes::HUMAN, 'You'));
     }
 
     protected function makeAIPlayers(MakePlayersCommand $command): void
@@ -40,12 +40,12 @@ class MakePlayersAction
         }
     }
 
-    protected function makePlayer(PlayerTypes $type): Player
+    protected function makePlayer(PlayerTypes $type, string $name = null): Player
     {
         $player = new Player;
 
         $player->key = $this->generateKey();
-        $player->name = $this->generateName();
+        $player->name = $name ?? $this->generateName();
         $player->pawnColour = $this->generateColor();
         $player->type = $type->value;
 
