@@ -3,10 +3,9 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Src\Domain\Model\Player;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class PlayersMakingTest extends TestCase
 {
@@ -71,7 +70,7 @@ class PlayersMakingTest extends TestCase
 
         $this->assertPlayersReceived($response, $payload);
 
-        $this->assertSessionUpdated($response);
+        $this->assertPlayersStored($response);
     }
 
     protected function assertPlayersReceived(TestResponse $response, $payload): void
@@ -98,17 +97,21 @@ class PlayersMakingTest extends TestCase
         }
     }
 
-    protected function assertSessionUpdated(TestResponse $response): void
+    protected function assertPlayersStored(TestResponse $response): void
     {
-        $this->assertNotNull(Session::get('players'));
+        Storage::disk('dataSource')->assertExists('game.json');
 
-        $playersOnSession = Collection::wrap(Session::get('players'));
+        $storedPlayers = Storage::disk('dataSource')->json('game.json')['players'];
 
         foreach ($response->json('players') as $receivedPlayer) {
-            $storedplayer = $playersOnSession->filter(fn (Player $player) => $player->key === $receivedPlayer['key']);
+            foreach ($storedPlayers as $player) {
+                if ($player['key'] === $receivedPlayer['key']) {
+                    $storedplayer = $player;
+                }
+            }
 
-            $this->assertSame($receivedPlayer['name'], $storedplayer->first()->name);
-            $this->assertSame($receivedPlayer['pawnColour'], $storedplayer->first()->pawnColour);
+            $this->assertSame($receivedPlayer['name'], $storedplayer['name']);
+            $this->assertSame($receivedPlayer['pawnColour'], $storedplayer['pawnColour']);
         }
     }
 }

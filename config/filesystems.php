@@ -15,6 +15,8 @@ return [
 
     'default' => env('FILESYSTEM_DISK', 'local'),
 
+    'dataSource' => env('FILESYSTEM_DATA_SOURCE', 'dataSource'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
@@ -33,6 +35,14 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
+            'throw' => false,
+        ],
+
+        'dataSource' => [
+            'driver' => 'local',
+            'root' => storage_path('app/dataSource'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
             'throw' => false,
         ],
 
@@ -71,6 +81,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('dataSource') => storage_path('app/dataSource'),
     ],
 
 ];

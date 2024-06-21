@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Src\Domain\Model\Player;
 use Tests\TestCase;
 use Illuminate\Support\Str;
+use Src\Domain\Model\Player;
 use Tests\Utilities\MakePlayers;
 use Illuminate\Testing\TestResponse;
 

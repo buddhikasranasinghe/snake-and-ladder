@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Src\Domain\Model\PlayersCollection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,12 +30,14 @@ class CheckPlayerExists
 
     protected function isPlayerValid(Request $request): bool
     {
-        $players = PlayersCollection::wrap(Session::get('players'));
+        $players = Storage::disk('dataSource')->json('game.json')['players'];
 
-        if (! $players) {
-            return false;
+        foreach ($players as $player) {
+            if ($player['key'] === $request->route('player_key')) {
+                return true;
+            }
         }
 
-        return $players->isExist($request->route('player_key'));
+        return false;
     }
 }

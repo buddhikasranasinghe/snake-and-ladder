@@ -3,8 +3,7 @@
 namespace Src\Domain\Actions;
 
 use Src\Domain\Model\Player;
-use Illuminate\Support\Facades\Session;
-use Src\Domain\Model\PlayersCollection;
+use Illuminate\Support\Facades\Storage;
 use Domain\Exceptions\InvalidPlayerException;
 
 class DiceRollingAction
@@ -28,8 +27,14 @@ class DiceRollingAction
 
     protected function playerExist(Player $player): bool
     {
-        $players = PlayersCollection::wrap(Session::get('players'));
+        $players = Storage::disk('dataSource')->json('game.json')['players'];
 
-        return $players->isExist($player->key);
+        foreach ($players as $p) {
+            if ($p['key'] === $player->key) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

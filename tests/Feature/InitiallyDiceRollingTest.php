@@ -6,9 +6,8 @@ use Tests\TestCase;
 use Illuminate\Support\Str;
 use Src\Domain\Model\Player;
 use Tests\Utilities\MakePlayers;
-use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class InitiallyDiceRollingTest extends TestCase
 {
@@ -16,6 +15,7 @@ class InitiallyDiceRollingTest extends TestCase
 
     protected Player $playerOne;
     protected Player $playerTwo;
+    protected Player $playerThree;
 
     protected function setUp(): void
     {
@@ -48,10 +48,11 @@ class InitiallyDiceRollingTest extends TestCase
 
     protected function createPlayers(): void
     {
-        $players = $this->makePlayers(1);
+        $players = $this->makePlayers(2);
 
-        $this->playerOne = $players->first();
-        $this->playerTwo = $players->last();
+        $this->playerOne = $players->toArray()[0];
+        $this->playerTwo = $players->toArray()[1];
+        $this->playerThree = $players->toArray()[2];
     }
 
     protected function assertSeeValidationErrors(TestResponse $response): void
@@ -90,6 +91,27 @@ class InitiallyDiceRollingTest extends TestCase
                         'index' => 2
                     ]
                 ]
+            ],
+            [
+                'players' => [
+                    'playerOne',
+                    'playerTwo',
+                    'playerThree'
+                ],
+                'expectedOutcome' => [
+                    [
+                        'player' => 'playerOne',
+                        'index' => 1
+                    ],
+                    [
+                        'player' => 'playerTwo',
+                        'index' => 2
+                    ],
+                    [
+                        'player' => 'playerThree',
+                        'index' => 3
+                    ]
+                ]
             ]
         ];
     }
@@ -103,22 +125,24 @@ class InitiallyDiceRollingTest extends TestCase
 
     protected function assertSessionUpdatedWithExpectedOutcome(array $expectedOutcome): void
     {
-        $this->assertNotNull(Session::get('initial_rolling_scores'));
+        Storage::disk('dataSource')->exists('game.json');
 
-        $scoresOnSession = Collection::wrap(Session::get('initial_rolling_scores'));
+        $storedScores = Storage::disk('dataSource')->json('game.json')['initial_rolling_scores'];
 
         $this->assertSameSize(
             $expectedOutcome,
-            $scoresOnSession
+            $storedScores
         );
 
         foreach ($expectedOutcome as $outcome) {
-            $storedPlayerWithScore = $scoresOnSession->filter(
-                fn ($playerWithScore) => $playerWithScore['player_key'] === $this->{$outcome['player']}->key
-            );
+            foreach ($storedScores as $storedScore) {
+                if ($storedScore['player_key'] === $this->{$outcome['player']}->key) {
+                    $storedPlayerWithScore = $storedScore;
+                }
+            }
 
-            $this->assertNotNull($storedPlayerWithScore->first()['score']);
-            $this->assertEquals($outcome['index'], $storedPlayerWithScore->first()['player_index']);
+            $this->assertNotNull($storedPlayerWithScore['score']);
+            $this->assertEquals($outcome['index'], $storedPlayerWithScore['player_index']);
         }
     }
 }
