@@ -7,7 +7,7 @@ use Src\Domain\Model\Player;
 use Domain\Enums\PlayerTypes;
 use Illuminate\Support\Collection;
 use Src\Domain\Model\PlayersCollection;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Src\Domain\Commands\MakePlayersCommand;
 
 class MakePlayersAction
@@ -87,8 +87,11 @@ class MakePlayersAction
 
     protected function storePlayers(): void
     {
-        if ($this->players->isNotEmpty()) {
-            Session::put('players', $this->players->toArray());
-        }
+        Storage::put(
+            'dataSource/game.json',
+            json_encode([
+                'players' => $this->players->toArray()
+            ])
+        );
     }
 }
