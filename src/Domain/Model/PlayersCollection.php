@@ -6,6 +6,22 @@ use Illuminate\Support\Collection;
 
 class PlayersCollection extends Collection
 {
+    public function mapPlayers(array $players): self
+    {
+        foreach ($players as $p) {
+            $player = new Player();
+
+            $player->key = $p['key'];
+            $player->name = $p['name'];
+            $player->pawnColour = $p['pawnColour'];
+            $player->type = $p['type'];
+
+            $this->push($player);
+        }
+
+        return $this;
+    }
+
     public function hasAlreadyTaken(string $fieldValue, string $fieldName): bool
     {
         $fieldValues = $this->pluck($fieldName);

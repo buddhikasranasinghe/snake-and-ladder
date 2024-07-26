@@ -6,12 +6,14 @@ use App\Http\Middleware\CheckPlayerExists;
 use App\Http\Controllers\MakePlayersController;
 use App\Http\Controllers\DiceRollingController;
 use App\Http\Controllers\InitialRollingController;
+use App\Http\Controllers\PlayingOrderReportController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('make-players', MakePlayersController::class);
+Route::get('playing-order-report', PlayingOrderReportController::class);
 
 Route::middleware([CheckPlayerExists::class])->group(function () {
     Route::get('initial-rolling/{player_key}', InitialRollingController::class);
