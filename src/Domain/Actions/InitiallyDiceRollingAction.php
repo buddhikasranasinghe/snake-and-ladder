@@ -17,11 +17,13 @@ class InitiallyDiceRollingAction
     /**
      * @throws InvalidPlayerException
      */
-    public function execute(Player $player): void
+    public function execute(Player $player): array
     {
         $playerWithScore = $this->diceRollingAction->execute($player);
 
         $this->storeInitialRollingScores($playerWithScore);
+
+        return $playerWithScore;
     }
 
     protected function storeInitialRollingScores(array $playerWithScore): void

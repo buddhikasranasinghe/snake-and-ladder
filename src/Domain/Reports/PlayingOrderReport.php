@@ -37,6 +37,7 @@ class PlayingOrderReport
         foreach ($orderedScores as $score) {
             $this->playingOrder->push([
                 'position' => $position,
+                'score' => $score['score'],
                 'player' => $this->players->find($score['player_key']),
             ]);
 
@@ -59,6 +60,7 @@ class PlayingOrderReport
         foreach ($nonScoredPlayers as $player) {
             $this->playingOrder->push([
                 'position' => null,
+                'score' => null,
                 'player' => $player,
             ]);
         }

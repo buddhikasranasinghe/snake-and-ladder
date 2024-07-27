@@ -77,12 +77,15 @@ class ViewPlayerOrderTest extends TestCase
         $expectedPlayingOrder = [
             [
                 "position" => null,
+                'score' => null,
                 "player" => 'playerOne',
             ],[
                 "position" => null,
+                'score' => null,
                 "player" => 'playerTwo'
             ],[
                 "position" => null,
+                'score' => null,
                 "player" => 'playerThree'
             ],
         ];
@@ -104,12 +107,15 @@ class ViewPlayerOrderTest extends TestCase
                 'expectedPlayingOrder' => [
                     [
                         "position" => 1,
+                        "score" => 6,
                         "player" => 'playerOne',
                     ],[
                         "position" => null,
+                        "score" => null,
                         "player" => 'playerTwo',
                     ],[
                         "position" => null,
+                        "score" => null,
                         "player" => 'playerThree',
                     ]
                 ]
@@ -129,12 +135,15 @@ class ViewPlayerOrderTest extends TestCase
                 'expectedPlayingOrder' => [
                     [
                         "position" => 1,
+                        "score" => 6,
                         "player" => 'playerOne',
                     ],[
                         "position" => 2,
+                        "score" => 2,
                         "player" => 'playerTwo',
                     ],[
                         "position" => null,
+                        "score" => null,
                         "player" => 'playerThree',
                     ]
                 ]
@@ -158,12 +167,15 @@ class ViewPlayerOrderTest extends TestCase
                 'expectedPlayingOrder' => [
                     [
                         "position" => 1,
+                        "score" => 6,
                         "player" => 'playerOne',
                     ],[
                         "position" => 2,
+                        "score" => 5,
                         "player" => 'playerThree',
                     ],[
                         "position" => 3,
+                        "score" => 2,
                         "player" => 'playerTwo',
                     ]
                 ]
@@ -187,12 +199,15 @@ class ViewPlayerOrderTest extends TestCase
                 'expectedPlayingOrder' => [
                     [
                         "position" => 1,
+                        "score" => 6,
                         "player" => 'playerOne',
                     ],[
                         "position" => 2,
+                        "score" => 6,
                         "player" => 'playerThree',
                     ],[
                         "position" => 3,
+                        "score" => 2,
                         "player" => 'playerTwo',
                     ]
                 ]
@@ -225,7 +240,7 @@ class ViewPlayerOrderTest extends TestCase
 
         $this->assertSame(
             $expectedOrder->toArray(),
-            $response->json('report')
+            $response->json()
         );
     }
 
@@ -236,6 +251,7 @@ class ViewPlayerOrderTest extends TestCase
         foreach ($expectedOrder as $order) {
             $playingOrder->push([
                 'position' => $order['position'],
+                'score' => $order['score'],
                 'player' => $this->{$order['player']}->toArray(),
             ]);
         }

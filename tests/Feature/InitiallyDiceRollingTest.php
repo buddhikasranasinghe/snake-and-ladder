@@ -120,10 +120,10 @@ class InitiallyDiceRollingTest extends TestCase
     {
         $response->assertOk();
 
-        $this->assertSessionUpdatedWithExpectedOutcome($expectedOutcome);
+        $this->assertScoreUpdated($expectedOutcome);
     }
 
-    protected function assertSessionUpdatedWithExpectedOutcome(array $expectedOutcome): void
+    protected function assertScoreUpdated(array $expectedOutcome): void
     {
         Storage::disk('dataSource')->exists('game.json');
 

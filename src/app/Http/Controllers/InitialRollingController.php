@@ -14,8 +14,8 @@ class InitialRollingController extends Controller
      */
     public function __invoke(InitiallyDiceRollingAction $action, FormRequest $request): JsonResponse
     {
-        $action->execute($request->getPlayer());
+        $playerWithScore = $action->execute($request->getPlayer());
 
-        return response()->json();
+        return response()->json($playerWithScore);
     }
 }
